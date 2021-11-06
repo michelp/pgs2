@@ -1,2 +1,2 @@
 # pgS2
-Postgres extension for S2 spatial coordinates
+Postgres extension for [S2 spherical coordinates](https://s2geometry.io/).
