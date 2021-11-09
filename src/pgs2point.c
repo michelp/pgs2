@@ -114,6 +114,16 @@ DatumGetS2point(Datum d) {
 }
 
 Datum
+s2point(PG_FUNCTION_ARGS) {
+    pgs2_FlatS2point *flat;
+    flat = palloc0(sizeof(pgs2_FlatS2point));
+    flat->x = PG_GETARG_FLOAT8(0);
+    flat->y = PG_GETARG_FLOAT8(1);
+    flat->z = PG_GETARG_FLOAT8(2);
+    return expand_flat_s2point(flat, CurrentMemoryContext);
+}
+
+Datum
 s2point_in(PG_FUNCTION_ARGS) {
   bool has_delim;
   pgs2_FlatS2point *flat;
@@ -181,9 +191,19 @@ s2point_out(PG_FUNCTION_ARGS)
   ystr = float8out_internal(y);
   zstr = float8out_internal(z);
 
-  appendStringInfo(&str, "%s,%s,%s", xstr, ystr, zstr);
+  appendStringInfo(&str, "(%s,%s,%s)", xstr, ystr, zstr);
   pfree(xstr);
   pfree(ystr);
   pfree(zstr);
   PG_RETURN_CSTRING(str.data);
+}
+
+Datum
+s2point_eq(PG_FUNCTION_ARGS) {
+  pgs2_S2point *A, *B;
+
+  A = PGS2_GETARG_S2POINT(0);
+  B = PGS2_GETARG_S2POINT(1);
+
+  PG_RETURN_BOOL(s2c_S2Point_eq(A->point, B->point));
 }

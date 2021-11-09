@@ -86,5 +86,6 @@ construct_empty_flat_s2point(uint64_t nrows, uint64_t ncols);
 PG_FUNCTION_INFO_V1(s2point);
 PG_FUNCTION_INFO_V1(s2point_in);
 PG_FUNCTION_INFO_V1(s2point_out);
+PG_FUNCTION_INFO_V1(s2point_eq);
 
 #endif /* PGS2POINT_H */

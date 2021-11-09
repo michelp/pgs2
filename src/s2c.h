@@ -12,6 +12,7 @@ typedef struct s2c_S2Point s2c_S2Point_t;
 s2c_S2Point_t *s2c_S2Point_new(double x, double y, double z);
 void s2c_S2Point_free(s2c_S2Point_t *m);
 void s2c_S2Point_xyz(s2c_S2Point_t *m, double *x, double *y, double *z);
+bool s2c_S2Point_eq(s2c_S2Point_t *A, s2c_S2Point_t *B);
 
 #ifdef __cplusplus
 }
