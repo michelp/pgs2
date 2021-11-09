@@ -1,7 +1,17 @@
+#define LDELIM			'('
+#define RDELIM			')'
+#define DELIM			','
+#define LDELIM_EP		'['
+#define RDELIM_EP		']'
+#define LDELIM_C		'<'
+#define RDELIM_C		'>'
+#define LDELIM_L		'{'
+#define RDELIM_L		'}'
 
 static void
 context_callback_s2point_free(void* ptr) {
     pgs2_S2point *A = (pgs2_S2point *) ptr;
+    s2c_S2Point_free(A->point);
 }
 
 /* Compute flattened size of storage needed for a s2point */
@@ -28,7 +38,6 @@ s2point_get_flat_size(ExpandedObjectHeader *eohptr) {
 static void
 s2point_flatten_into(ExpandedObjectHeader *eohptr,
                     void *result, Size allocated_size)  {
-    size_t array_size;
 
     /* Cast EOH pointer to s2 object, and result pointer to flat
        object */
@@ -42,7 +51,6 @@ s2point_flatten_into(ExpandedObjectHeader *eohptr,
     /* Zero out the whole allocated buffer */
     memset(flat, 0, allocated_size);
     s2c_S2Point_xyz(A->point, &(flat->x), &(flat->y), &(flat->z));
-    SET_VARSIZE(flat, allocated_size);
 }
 
 /* Expand a flat s2point in to an S2 one, return as Postgres Datum. */
@@ -53,8 +61,6 @@ expand_flat_s2point(pgs2_FlatS2point *flat,
 
   MemoryContext objcxt, oldcxt;
   MemoryContextCallback *ctxcb;
-
-  size_t array_size;
 
   /* Create a new context that will hold the s2 object. */
   objcxt = AllocSetContextCreate(parentcontext,
@@ -75,7 +81,6 @@ expand_flat_s2point(pgs2_FlatS2point *flat,
   /* Switch to new object context */
   oldcxt = MemoryContextSwitchTo(objcxt);
 
-  /* Setting flat size to zero tells us the object has been written. */
   A->flat_size = 0;
 
   /* Create a context callback to free s2point when context is cleared */
@@ -84,6 +89,8 @@ expand_flat_s2point(pgs2_FlatS2point *flat,
   ctxcb->func = context_callback_s2point_free;
   ctxcb->arg = A;
   MemoryContextRegisterResetCallback(objcxt, ctxcb);
+
+  A->point = s2c_S2Point_new(flat->x, flat->y, flat->z);
 
   /* Switch back to old context */
   MemoryContextSwitchTo(oldcxt);
@@ -108,33 +115,75 @@ DatumGetS2point(Datum d) {
 
 Datum
 s2point_in(PG_FUNCTION_ARGS) {
+  bool has_delim;
   pgs2_FlatS2point *flat;
-  char *input;
-  size_t len;
-  int bc;
-  Datum d;
+  char *input, *orig_string;
 
-  input = PG_GETARG_CSTRING(0);
-  len = strlen(input);
-  bc = (len) / 2 + VARHDRSZ;
-  flat = palloc(bc);
-  hex_decode(input, len, (char*)flat);
-  d = expand_flat_s2point(flat, CurrentMemoryContext);
-  return d;
+  input = orig_string = PG_GETARG_CSTRING(0);
+  flat = palloc0(sizeof(pgs2_FlatS2point));
+
+  while (isspace((unsigned char) *input))
+      input++;
+
+  if ((has_delim = (*input == LDELIM)))
+      input++;
+
+  flat->x = float8in_internal(input, &input, "s2point", orig_string);
+
+  if (*input++ != DELIM)
+      ereport(ERROR,
+              (errcode(ERRCODE_INVALID_TEXT_REPRESENTATION),
+               errmsg("invalid delimiter after x in %s: \"%s\"",
+                      "s2point", orig_string)));
+
+  flat->y = float8in_internal(input, &input, "s2point", orig_string);
+
+  if (*input++ != DELIM)
+      ereport(ERROR,
+              (errcode(ERRCODE_INVALID_TEXT_REPRESENTATION),
+               errmsg("invalid delimiter after y in %s: \"%s\"",
+                      "s2point", orig_string)));
+
+  flat->z = float8in_internal(input, &input, "s2point", orig_string);
+
+  if (has_delim)
+      {
+          if (*input++ != RDELIM)
+              ereport(ERROR,
+                      (errcode(ERRCODE_INVALID_TEXT_REPRESENTATION),
+                       errmsg("invalid ending delimter for %s: \"%s\"",
+                              "s2point", orig_string)));
+          while (isspace((unsigned char) *input))
+              input++;
+      }
+
+  if (*input != '\0')
+      ereport(ERROR,
+              (errcode(ERRCODE_INVALID_TEXT_REPRESENTATION),
+               errmsg("no null byte at end of %s: \"%s\"",
+                      "s2point", orig_string)));
+
+  return expand_flat_s2point(flat, CurrentMemoryContext);
 }
 
 Datum
 s2point_out(PG_FUNCTION_ARGS)
 {
-  Size size;
-  char *rp, *result, *buf;
-  pgs2_S2point *A = PGS2_GETARG_S2POINT(0);
-  size = EOH_get_flat_size(&A->hdr);
-  buf = palloc(size);
-  EOH_flatten_into(&A->hdr, buf, size);
-  rp = result = palloc((size * 2) + 1);
-  rp += hex_encode(buf, size, rp);
-  *rp = '\0';
-  PG_RETURN_CSTRING(result);
-}
+  double x, y, z;
+  char *xstr, *ystr, *zstr;
+  StringInfoData str;
 
+  pgs2_S2point *A = PGS2_GETARG_S2POINT(0);
+  s2c_S2Point_xyz(A->point, &x, &y, &z);
+  initStringInfo(&str);
+
+  xstr = float8out_internal(x);
+  ystr = float8out_internal(y);
+  zstr = float8out_internal(z);
+
+  appendStringInfo(&str, "%s,%s,%s", xstr, ystr, zstr);
+  pfree(xstr);
+  pfree(ystr);
+  pfree(zstr);
+  PG_RETURN_CSTRING(str.data);
+}

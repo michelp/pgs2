@@ -13,6 +13,8 @@
 #include "utils/lsyscache.h"
 #include "nodes/pg_list.h"
 #include "utils/varlena.h"
+#include "utils/float.h"
+#include "lib/stringinfo.h"
 #include "s2c.h"
 
 /* dumb debug helper */

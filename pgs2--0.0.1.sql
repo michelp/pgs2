@@ -16,8 +16,9 @@ LANGUAGE C IMMUTABLE STRICT;
 CREATE TYPE s2point (
     input = s2point_in,
     output = s2point_out,
-    alignment = int4,
-    storage = 'extended',
-    internallength = -1
+    alignment = double,
+    storage = 'plain',
+    internallength = 24,
+    element = float8
 );
 
