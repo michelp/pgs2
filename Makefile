@@ -5,8 +5,8 @@ PG_CONFIG ?= pg_config
 DATA = $(wildcard *--*.sql)
 PGXS := $(shell $(PG_CONFIG) --pgxs)
 MODULE_big = pgs2
-OBJS = $(patsubst %.c,%.o,$(wildcard src/pgs2.c)) libs2c.o
-PG_CPPFLAGS = -O0
+OBJS = libs2c.o $(patsubst %.c,%.o,$(wildcard src/pgs2.c))
+PG_LDFLAGS = -lstdc++
 
 TESTS        = $(wildcard test/sql/*.sql)
 REGRESS      = $(patsubst test/sql/%.sql,%,$(TESTS))
