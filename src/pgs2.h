@@ -15,7 +15,7 @@
 #include "utils/varlena.h"
 #include "utils/float.h"
 #include "lib/stringinfo.h"
-#include "s2c.h"
+#include "s2c/s2c.h"
 
 /* dumb debug helper */
 #define elogn(s) elog(NOTICE, "%s", (s))

@@ -14,7 +14,7 @@ RUN /bin/rm -Rf "$PGDATA" && mkdir "$PGDATA"
 WORKDIR "/home/postgres"
 
 # get postgres source and compile with debug and no optimization
-RUN git clone --branch REL_12_STABLE https://github.com/postgres/postgres.git --depth=1 && \
+RUN git clone --branch REL_14_STABLE https://github.com/postgres/postgres.git --depth=1 && \
     cd postgres && ./configure \
     --prefix=/usr/ \
 #    --enable-debug \

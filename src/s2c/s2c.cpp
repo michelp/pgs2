@@ -2,7 +2,7 @@
 #include <cinttypes>
 #include <cstdint>
 #include <cstdio>
-#include "s2c.h"
+#include "s2c/s2c.h"
 #include "s2/base/commandlineflags.h"
 #include "s2/s2earth.h"
 #include "s2/s1chord_angle.h"

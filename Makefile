@@ -14,4 +14,4 @@ REGRESS_OPTS = --inputdir=test --load-language=plpgsql
 include $(PGXS)
 
 libs2c.o:
-	g++ -c -I./s2geometry/src src/s2c.cpp -o libs2c.o
+	g++ -c -I./src -I./s2geometry/src src/s2c/s2c.cpp -o libs2c.o
