@@ -17,10 +17,13 @@
 #include "lib/stringinfo.h"
 #include "s2c/s2c.h"
 
-/* dumb debug helper */
-#define elogn(s) elog(NOTICE, "%s", (s))
-#define elogn1(s, v) elog(NOTICE, "%s: %lu", (s), (v))
+#define DELIM       ','
+#define LDELIM		'('
+#define RDELIM		')'
+#define LCURLY		'{'
+#define RCURLY		'}'
 
+#include "pgs2cell.h"
 #include "pgs2point.h"
 
 void

@@ -17,11 +17,9 @@ extern "C" {
     void T ## _free(T_t(T) *A);                              \
     bool T ## _eq(T_t(T) *A, T_t(T) *B);                     \
 
-// S2Point
-
-STRUCTS(s2c_S2Point);
-BASE_METHODS(s2c_S2Point, double x, double y, double z);
-void s2c_S2Point_xyz(s2c_S2Point_t *m, double *x, double *y, double *z);
+#include "s2c_s2cell.h"
+#include "s2c_s2point.h"
+#include "s2c_s2latlng.h"
 
 #ifdef __cplusplus
 }

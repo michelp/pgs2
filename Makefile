@@ -6,7 +6,7 @@ DATA = $(wildcard *--*.sql)
 PGXS := $(shell $(PG_CONFIG) --pgxs)
 MODULE_big = pgs2
 OBJS = libs2c.o $(patsubst %.c,%.o,$(wildcard src/pgs2.c))
-PG_LDFLAGS = -lstdc++
+PG_LDFLAGS = -lstdc++ -ls2
 
 TESTS        = $(wildcard test/sql/*.sql)
 REGRESS      = $(patsubst test/sql/%.sql,%,$(TESTS))
@@ -14,4 +14,4 @@ REGRESS_OPTS = --inputdir=test --load-language=plpgsql
 include $(PGXS)
 
 libs2c.o:
-	g++ -c -I./src -I./s2geometry/src src/s2c/s2c.cpp -o libs2c.o
+	g++ -c -fPIC -I./src src/s2c/s2c.cpp -o libs2c.o -lc

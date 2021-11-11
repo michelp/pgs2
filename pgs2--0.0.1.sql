@@ -1,43 +1,82 @@
 -- complain if script is sourced in psql, rather than via CREATE EXTENSION
 \echo Use "CREATE EXTENSION pgs2" to load this file. \quit
 
-CREATE TYPE s2point;
+CREATE TYPE S2Point;
 
-CREATE FUNCTION s2point(x float8, y float8, z float8 = 0.0)
-RETURNS s2point
-AS '$libdir/pgs2', 's2point'
+CREATE FUNCTION S2Point(x float8, y float8, z float8 = 0.0)
+RETURNS S2Point
+AS '$libdir/pgs2', 'S2Point'
 LANGUAGE C STRICT;
 
-CREATE FUNCTION s2point_in(cstring)
-RETURNS s2point
-AS '$libdir/pgs2', 's2point_in'
+CREATE FUNCTION S2Point_in(cstring)
+RETURNS S2Point
+AS '$libdir/pgs2', 'S2Point_in'
 LANGUAGE C IMMUTABLE STRICT;
 
-CREATE FUNCTION s2point_out(s2point)
+CREATE FUNCTION S2Point_out(S2Point)
 RETURNS cstring
-AS '$libdir/pgs2', 's2point_out'
+AS '$libdir/pgs2', 'S2Point_out'
 LANGUAGE C IMMUTABLE STRICT;
 
-CREATE FUNCTION s2point_eq(A s2point, B s2point)
+CREATE FUNCTION S2Point_eq(A S2Point, B S2Point)
 RETURNS bool
-AS '$libdir/pgs2', 's2point_eq'
+AS '$libdir/pgs2', 'S2Point_eq'
 LANGUAGE C STABLE;
 
-CREATE TYPE s2point (
-    input = s2point_in,
-    output = s2point_out,
+CREATE TYPE S2Point (
+    input = S2Point_in,
+    output = S2Point_out,
     alignment = double,
     storage = 'plain',
     internallength = 24,
+    element = float8,
     category = 'G'
 );
 
 CREATE OPERATOR = (
-    leftarg = s2point,
-    rightarg = s2point,
-    procedure = s2point_eq,
+    leftarg = S2Point,
+    rightarg = S2Point,
+    procedure = S2Point_eq,
     negator = <>
 );
 
+-- CREATE TYPE S2LatLng;
+
+-- CREATE FUNCTION S2LatLng(lat float8, lng float8)
+-- RETURNS S2LatLng
+-- AS '$libdir/pgs2', 'S2LatLng'
+-- LANGUAGE C STRICT;
+
+-- CREATE FUNCTION S2LatLng_in(cstring)
+-- RETURNS S2LatLng
+-- AS '$libdir/pgs2', 'S2LatLng_in'
+-- LANGUAGE C IMMUTABLE STRICT;
+
+-- CREATE FUNCTION S2LatLng_out(S2LatLng)
+-- RETURNS cstring
+-- AS '$libdir/pgs2', 'S2LatLng_out'
+-- LANGUAGE C IMMUTABLE STRICT;
+
+-- CREATE FUNCTION S2LatLng_eq(A S2LatLng, B S2LatLng)
+-- RETURNS bool
+-- AS '$libdir/pgs2', 'S2LatLng_eq'
+-- LANGUAGE C STABLE;
+
+-- CREATE TYPE S2LatLng (
+--     input = S2LatLng_in,
+--     output = S2LatLng_out,
+--     alignment = double,
+--     storage = 'extended',
+--     internallength = variable,
+--     category = 'G'
+-- );
+
+-- CREATE OPERATOR = (
+--     leftarg = S2LatLng,
+--     rightarg = S2LatLng,
+--     procedure = S2LatLng_eq,
+--     negator = <>
+-- );
+    
     
 

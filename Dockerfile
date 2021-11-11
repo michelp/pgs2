@@ -5,7 +5,8 @@ ARG DEBIAN_FRONTEND=noninteractive
 # install base dependences    
 RUN apt-get update && \
     apt-get install -y make cmake git curl build-essential m4 sudo gdbserver \
-    gdb libreadline-dev bison flex zlib1g-dev tmux zile zip vim gawk wget
+    gdb libreadline-dev bison flex zlib1g-dev tmux zile zip vim gawk wget \
+    libgflags-dev libgoogle-glog-dev libgtest-dev libssl-dev   
 
 # add postgres user and make data dir        
 RUN groupadd -r postgres && useradd --no-log-init -r -m -s /bin/bash -g postgres -G sudo postgres
@@ -28,23 +29,27 @@ RUN curl -s -L https://github.com/theory/pgtap/archive/v0.99.0.tar.gz | tar zxvf
 
 # chown dependencies    
 RUN chown -R postgres:postgres /home/postgres
-    
+
+RUN mkdir /absl
+RUN git clone https://github.com/abseil/abseil-cpp.git && \
+    cd abseil-cpp* && \
+    mkdir build && cd build && \
+    cmake -DCMAKE_POSITION_INDEPENDENT_CODE=ON -DCMAKE_INSTALL_PREFIX=/absl .. && \
+    cmake --build . --target install && ldconfig
+
+RUN mkdir /s2lib
+RUN curl -s -L https://github.com/google/s2geometry/archive/refs/tags/v0.9.0.tar.gz | tar xzvf - && \
+    cd s2geometry* && \
+    mkdir build && cd build && \
+    cmake -DCMAKE_PREFIX_PATH=/absl -DCMAKE_INSTALL_PREFIX=/usr .. && \
+    make && make install && make clean && ldconfig
+
 # put test stuff into pg home        
 RUN mkdir "/home/postgres/pgs2"
 WORKDIR "/home/postgres/pgs2"
 COPY . .
-    
-# RUN mkdir "/home/postgres/LAGraph"
-# COPY LAGraph /home/postgres/LAGraph
 
-# RUN cd /home/postgres/LAGraph && \
-#     make library \
-#     CMAKE_OPTIONS='-DCMAKE_BUILD_TYPE=Debug' \
-#     && make install
-    
-# make the extension    
 RUN make && make install && make clean
-RUN ldconfig
 
 # chown just pgs2
 RUN chown -R postgres:postgres /home/postgres/pgs2
