@@ -12,11 +12,11 @@ Postgres.
   
   - S2Point: Stored as 3 double precision floats.
 
-  - S2LatLng: Stored as 2 double precision floats.
+  - S2Cap: Point and radius stored as 4 doubles.
 
-  - S2Cap: TODO
+  - S2LatLng: Stored as 2 doubles.
 
-  - S2LatLngRect: TODO
+  - S2LatLngRect: Stored as 4 doubles.
 
 ## Variable Length S2Region types
 
@@ -38,6 +38,8 @@ S2Builder is wrapped by an aggregate, any region can be added to the
 builder.
 
   `select s2builder(region) from ... where ...;`
+  
+s2builder supports all current geometry types.
 
 ## Indexing
 

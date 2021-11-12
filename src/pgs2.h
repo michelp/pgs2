@@ -22,10 +22,13 @@
 #define RDELIM		')'
 #define LCURLY		'{'
 #define RCURLY		'}'
+#define COLON       ':'
 
 #include "pgs2cell.h"
 #include "pgs2point.h"
 #include "pgs2latlng.h"
+#include "pgs2latlngrect.h"
+#include "pgs2cap.h"
 #include "casts.h"
 
 void

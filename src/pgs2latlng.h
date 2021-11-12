@@ -2,8 +2,7 @@
 #define PGS2LATLNG_H
 
 typedef struct pgs2_S2LatLng {
-    double x;
-    double y;
+    double x, y;
 } pgs2_S2LatLng;
 
 #define DatumGetS2LatLngP(X)    ((pgs2_S2LatLng *) DatumGetPointer(X))

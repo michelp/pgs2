@@ -4,6 +4,7 @@
 CREATE TYPE S2Point;
 CREATE TYPE S2Cell;
 CREATE TYPE S2LatLng;
+CREATE TYPE S2Cap;
 
 -- S2Point
 
@@ -113,6 +114,84 @@ CREATE OPERATOR = (
     leftarg = S2LatLng,
     rightarg = S2LatLng,
     procedure = S2LatLng_eq,
+    negator = <>
+);
+
+-- S2Cap
+
+CREATE FUNCTION S2Cap(x float8, y float8, z float8 = 0.0, r float8 = 0.0)
+RETURNS S2Cap
+AS '$libdir/pgs2', 'S2Cap'
+LANGUAGE C STRICT;
+
+CREATE FUNCTION S2Cap_in(cstring)
+RETURNS S2Cap
+AS '$libdir/pgs2', 'S2Cap_in'
+LANGUAGE C IMMUTABLE STRICT;
+
+CREATE FUNCTION S2Cap_out(S2Cap)
+RETURNS cstring
+AS '$libdir/pgs2', 'S2Cap_out'
+LANGUAGE C IMMUTABLE STRICT;
+
+CREATE FUNCTION S2Cap_eq(A S2Cap, B S2Cap)
+RETURNS bool
+AS '$libdir/pgs2', 'S2Cap_eq'
+LANGUAGE C STABLE;
+
+CREATE TYPE S2Cap (
+    input = S2Cap_in,
+    output = S2Cap_out,
+    alignment = double,
+    storage = 'plain',
+    internallength = 32,
+    element = float8,
+    category = 'G'
+);
+
+CREATE OPERATOR = (
+    leftarg = S2Cap,
+    rightarg = S2Cap,
+    procedure = S2Cap_eq,
+    negator = <>
+);
+
+-- LatLngRect
+
+CREATE FUNCTION S2LatLngRect(lo S2Point, hi S2Point)
+RETURNS S2LatLngRect
+AS '$libdir/pgs2', 'S2LatLngRect'
+LANGUAGE C STRICT;
+
+CREATE FUNCTION S2LatLngRect_in(cstring)
+RETURNS S2LatLngRect
+AS '$libdir/pgs2', 'S2LatLngRect_in'
+LANGUAGE C IMMUTABLE STRICT;
+
+CREATE FUNCTION S2LatLngRect_out(S2LatLngRect)
+RETURNS cstring
+AS '$libdir/pgs2', 'S2LatLngRect_out'
+LANGUAGE C IMMUTABLE STRICT;
+
+CREATE FUNCTION S2LatLngRect_eq(A S2LatLngRect, B S2LatLngRect)
+RETURNS bool
+AS '$libdir/pgs2', 'S2LatLngRect_eq'
+LANGUAGE C STABLE;
+
+CREATE TYPE S2LatLngRect (
+    input = S2LatLngRect_in,
+    output = S2LatLngRect_out,
+    alignment = double,
+    storage = 'plain',
+    internallength = 16,
+    element = float8,
+    category = 'G'
+);
+
+CREATE OPERATOR = (
+    leftarg = S2LatLngRect,
+    rightarg = S2LatLngRect,
+    procedure = S2LatLngRect_eq,
     negator = <>
 );
 
