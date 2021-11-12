@@ -24,6 +24,8 @@
 #define RCURLY		'}'
 #define COLON       ':'
 
+void error_callback(const char *msg);
+
 #include "pgs2cell.h"
 #include "pgs2point.h"
 #include "pgs2latlng.h"

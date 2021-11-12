@@ -6,6 +6,8 @@
 extern "C" {
 #endif
 
+typedef void (*error_cb)(const char *msg);
+
 #define T_t(T) T ## _t
 
 #define STRUCTS(T)                              \
@@ -19,6 +21,10 @@ extern "C" {
     T_t(T)* T ## _new(__VA_ARGS__);                          \
     void T ## _free(T_t(T) *A);                              \
     bool T ## _eq(T_t(T) *A, T_t(T) *B);                     \
+
+#define CATCH_ALL(E) catch (const std::exception& ex) { \
+        E(ex.what());                                   \
+    }
 
 #include "s2c_s2point.h"
 #include "s2c_s2cell.h"
