@@ -76,7 +76,7 @@ CREATE OPERATOR = (
     procedure = S2Cell_eq,
     negator = <>
 );
-    
+
 -- LatLng
 
 CREATE FUNCTION S2LatLng(x float8, y float8)
@@ -121,15 +121,43 @@ CREATE OPERATOR = (
 CREATE FUNCTION S2Point_as_S2Cell(p S2Point)
 RETURNS S2Cell
 AS '$libdir/pgs2', 'S2Point_as_S2Cell'
-LANGUAGE C IMMUTABLE STRICT;
-    
-CREATE CAST (s2point AS s2cell) WITH FUNCTION s2point_as_s2cell(s2point) AS ASSIGNMENT;
+LANGUAGE C STRICT;
+
+CREATE CAST (S2Point AS S2Cell) WITH FUNCTION S2Point_as_S2Cell(S2Point) AS ASSIGNMENT;
+
+CREATE FUNCTION S2Point_as_S2LatLng(p S2Point)
+RETURNS S2LatLng
+AS '$libdir/pgs2', 'S2Point_as_S2LatLng'
+LANGUAGE C STRICT;
+
+CREATE CAST (S2Point AS S2LatLng) WITH FUNCTION S2Point_as_S2LatLng(S2Point) AS ASSIGNMENT;
 
 CREATE FUNCTION S2Cell_as_S2Point(c S2Cell)
 RETURNS S2Point
 AS '$libdir/pgs2', 'S2Cell_as_S2Point'
 LANGUAGE C STRICT;
 
-CREATE CAST (s2cell  AS s2point) WITH FUNCTION s2cell_as_s2point(s2cell) AS ASSIGNMENT;
+CREATE CAST (S2Cell AS S2Point) WITH FUNCTION S2Cell_as_S2Point(S2Cell) AS ASSIGNMENT;
 
-    
+CREATE FUNCTION S2Cell_as_S2LatLng(c S2Cell)
+RETURNS S2LatLng
+AS '$libdir/pgs2', 'S2Cell_as_S2LatLng'
+LANGUAGE C STRICT;
+
+CREATE CAST (S2Cell AS S2LatLng) WITH FUNCTION S2Cell_as_S2LatLng(S2Cell) AS ASSIGNMENT;
+
+
+CREATE FUNCTION S2LatLng_as_S2Point(ll S2LatLng)
+RETURNS S2Point
+AS '$libdir/pgs2', 'S2LatLng_as_S2Point'
+LANGUAGE C STRICT;
+
+CREATE CAST (S2LatLng AS S2Point) WITH FUNCTION S2LatLng_as_S2Point(S2LatLng) AS ASSIGNMENT;
+
+
+CREATE FUNCTION S2LatLng_as_S2Cell(p S2LatLng)
+RETURNS S2Cell
+AS '$libdir/pgs2', 'S2LatLng_as_S2Cell'
+LANGUAGE C STRICT;
+
+CREATE CAST (S2LatLng AS S2Cell) WITH FUNCTION S2LatLng_as_S2Cell(S2LatLng) AS ASSIGNMENT;
