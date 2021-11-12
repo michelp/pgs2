@@ -1,5 +1,3 @@
-
-
 Datum
 S2Point(PG_FUNCTION_ARGS) {
     pgs2_S2Point *p;
@@ -68,7 +66,6 @@ S2Point_out(PG_FUNCTION_ARGS)
 {
   char *xstr, *ystr, *zstr;
   StringInfoData str;
-
   pgs2_S2Point *p = PGS2_GETARG_S2POINT_P(0);
   initStringInfo(&str);
 
@@ -86,9 +83,7 @@ S2Point_out(PG_FUNCTION_ARGS)
 Datum
 S2Point_eq(PG_FUNCTION_ARGS) {
   pgs2_S2Point *A, *B;
-
   A = PGS2_GETARG_S2POINT_P(0);
   B = PGS2_GETARG_S2POINT_P(1);
-
   PG_RETURN_BOOL(A->x == B->x && A->y == B->y && A->z == B->z);
 }

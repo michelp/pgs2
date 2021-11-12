@@ -25,6 +25,8 @@
 
 #include "pgs2cell.h"
 #include "pgs2point.h"
+#include "pgs2latlng.h"
+#include "casts.h"
 
 void
 _PG_init(void);
