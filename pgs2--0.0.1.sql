@@ -145,7 +145,6 @@ CREATE TYPE S2Cap (
     alignment = double,
     storage = 'plain',
     internallength = 32,
-    element = float8,
     category = 'G'
 );
 
