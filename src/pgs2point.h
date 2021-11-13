@@ -1,10 +1,6 @@
 #ifndef PGS2POINT_H
 #define PGS2POINT_H
 
-typedef struct pgs2_S2Point {
-    double x, y, z;
-} pgs2_S2Point;
-
 #define DatumGetS2PointP(X)    ((pgs2_S2Point *) DatumGetPointer(X))
 #define S2PointPGetDatum(X)    PointerGetDatum(X)
 #define PGS2_GETARG_S2POINT_P(n) DatumGetS2PointP(PG_GETARG_DATUM(n))

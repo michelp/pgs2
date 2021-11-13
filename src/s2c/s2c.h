@@ -26,6 +26,8 @@ typedef void (*error_cb)(const char *msg);
         E(ex.what());                                   \
     }
 
+
+#include "src/s2types.h"
 #include "s2c_s2point.h"
 #include "s2c_s2cell.h"
 #include "s2c_s2latlng.h"

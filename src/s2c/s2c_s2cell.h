@@ -1,3 +1,3 @@
-void s2c_token_to_id(char*, uint64_t *id, error_cb);
-void s2c_id_to_token(uint64_t, char**, error_cb);
-void s2c_id_to_xyz(uint64_t id, double *x, double *y, double *z, error_cb);
+void s2c_token_to_cell(char*, pgs2_S2Cell*, error_cb);
+void s2c_cell_to_token(pgs2_S2Cell*, char**, error_cb);
+void s2c_cell_to_point(pgs2_S2Cell*, pgs2_S2Point*, error_cb);

@@ -1,25 +1,15 @@
-void s2c_xyz_from_id(uint64_t id, double *x, double *y, double *z, error_cb cb) {
+void s2c_point_to_cell(pgs2_S2Point* point, pgs2_S2Cell* cell, error_cb) {
     try {
-        S2CellId cell = S2CellId(id);
-        S2Point point = cell.ToPoint();
-        *x = point.x();
-        *y = point.y();
-        *z = point.z();
+        S2Point P = S2Point(point->x, point->y, point->z);
+        cell->id = S2CellId(P).id();
     } CATCH_ALL(error_cb)
 }
 
-void s2c_xyz_to_id(double x, double y, double z, uint64_t *id, error_cb cb) {
+void s2c_point_to_latlng(pgs2_S2Point* point, pgs2_S2LatLng* ll, error_cb) {
     try {
-        S2Point point = S2Point(x, y, z);
-        *id = S2CellId(point).id();
-    } CATCH_ALL(error_cb)
-}
-
-void s2c_xyz_to_latlng(double x, double y, double z, double *lat, double *lng, error_cb) {
-    try {
-        S2Point point = S2Point(x, y, z);
-        S2LatLng ll = S2LatLng(point);
-        *lat = ll.lat().radians();
-        *lng = ll.lng().radians();
+        S2Point P = S2Point(point->x, point->y, point->z);
+        S2LatLng L = S2LatLng(P);
+        ll->lat = L.lat().radians();
+        ll->lng = L.lng().radians();
     } CATCH_ALL(error_cb)
 }

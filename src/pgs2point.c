@@ -20,7 +20,7 @@ S2Point_in(PG_FUNCTION_ARGS) {
     while (isspace((unsigned char) *input))
         input++;
     
-    if ((has_delim = (*input == LDELIM)))
+    if ((has_delim = (*input == LPAREN)))
         input++;
     
     p->x = float8in_internal(input, &input, "S2Point", orig_string);
@@ -43,7 +43,7 @@ S2Point_in(PG_FUNCTION_ARGS) {
 
     if (has_delim)
         {
-            if (*input++ != RDELIM)
+            if (*input++ != RPAREN)
                 ereport(ERROR,
                         (errcode(ERRCODE_INVALID_TEXT_REPRESENTATION),
                          errmsg("invalid ending delimter for %s: \"%s\"",

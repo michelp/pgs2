@@ -1,23 +1,22 @@
 
-void s2c_token_to_id(char* token, uint64_t *id, error_cb cb) {
+void s2c_token_to_cell(char* token, pgs2_S2Cell *cell, error_cb cb) {
     try {
-        *id = S2CellId::FromToken(token, strlen(token)).id();
+        cell->id = S2CellId::FromToken(token, strlen(token)).id();
     } CATCH_ALL(cb)
 }
 
-void s2c_id_to_token(uint64_t id, char **token, error_cb cb) {
+void s2c_cell_to_token(pgs2_S2Cell *cell, char **token, error_cb cb) {
     try {
-        *token =  strdup(S2CellId(id).ToToken().c_str());
+        *token =  strdup(S2CellId(cell->id).ToToken().c_str());
     } CATCH_ALL(cb)
 }
 
-void s2c_id_to_xyz(uint64_t id, double *x, double *y, double *z, error_cb cb) {
+void s2c_cell_to_point(pgs2_S2Cell *cell, pgs2_S2Point *point, error_cb cb) {
     try {
-        S2Cell cell = S2Cell(S2CellId(id));
-        S2Point point = cell.GetCenter();
-        *x = point.x();
-        *y = point.y();
-        *z = point.z();
+        S2Cell C = S2Cell(S2CellId(cell->id));
+        S2Point P = C.GetCenter();
+        point->x = P.x();
+        point->y = P.y();
+        point->z = P.z();
     } CATCH_ALL(cb)
 }
-

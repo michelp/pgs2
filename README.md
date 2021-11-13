@@ -10,7 +10,8 @@ Postgres.
 
 ### S2Cell: Stored as a 64-bit cell id.
 
-A cell is an unsigned 64 id.  It's SQL representation is an S2 "token":
+A cell is stored as an unsigned 64 id, but since Postgres doesn't have
+unsigned integer types, it's SQL representation is an S2 "token":
 
 ```
 

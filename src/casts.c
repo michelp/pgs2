@@ -5,7 +5,7 @@ S2Point_as_S2Cell(PG_FUNCTION_ARGS) {
     
     point = PGS2_GETARG_S2POINT_P(0);
     cell = palloc0(sizeof(pgs2_S2Cell));
-    s2c_xyz_to_id(point->x, point->y, point->z, &(cell->id), error_callback);
+    s2c_point_to_cell(point, cell, error_callback);
     PGS2_RETURN_S2CELL_P(cell);
 }
 
@@ -16,18 +16,18 @@ S2Point_as_S2LatLng(PG_FUNCTION_ARGS) {
     
     point = PGS2_GETARG_S2POINT_P(0);
     ll = palloc0(sizeof(pgs2_S2LatLng));
-    s2c_xyz_to_latlng(point->x, point->y, point->z, &(ll->x), &(ll->y), error_callback);
+    s2c_point_to_latlng(point, ll, error_callback);
     PGS2_RETURN_S2LATLNG_P(ll);
 }
 
 Datum
 S2Cell_as_S2Point(PG_FUNCTION_ARGS) {
-    pgs2_S2Point *point;
     pgs2_S2Cell *cell;
+    pgs2_S2Point *point;
     
     cell = PGS2_GETARG_S2CELL_P(0);
     point = palloc0(sizeof(pgs2_S2Point));
-    s2c_id_to_xyz(cell->id, &(point->x), &(point->y), &(point->z), error_callback);
+    s2c_cell_to_point(cell, point, error_callback);
     PGS2_RETURN_S2POINT_P(point);
 }
 
@@ -38,29 +38,31 @@ S2Cell_as_S2LatLng(PG_FUNCTION_ARGS) {
     
     cell = PGS2_GETARG_S2CELL_P(0);
     ll = palloc0(sizeof(pgs2_S2LatLng));
-    s2c_id_to_latlng(cell->id, &(ll->x), &(ll->y), error_callback);
+    s2c_cell_to_latlng(cell, ll, error_callback);
     PGS2_RETURN_S2LATLNG_P(ll);
 }
 
 Datum
 S2LatLng_as_S2Point(PG_FUNCTION_ARGS) {
+    pgs2_S2LatLng *ll;
     pgs2_S2Point *point;
-    pgs2_S2Cell *cell;
     
-    cell = PGS2_GETARG_S2CELL_P(0);
+    ll = PGS2_GETARG_S2LATLNG_P(0);
     point = palloc0(sizeof(pgs2_S2Point));
-    s2c_id_to_xyz(cell->id, &(point->x), &(point->y), &(point->z), error_callback);
+    
+    s2c_latlng_to_point(ll, point, error_callback);
     PGS2_RETURN_S2POINT_P(point);
 }
 
 Datum
 S2LatLng_as_S2Cell(PG_FUNCTION_ARGS) {
-    pgs2_S2Point *point;
+    pgs2_S2LatLng *ll;
     pgs2_S2Cell *cell;
     
-    cell = PGS2_GETARG_S2CELL_P(0);
-    point = palloc0(sizeof(pgs2_S2Point));
-    s2c_id_to_xyz(cell->id, &(point->x), &(point->y), &(point->z), error_callback);
-    PGS2_RETURN_S2POINT_P(point);
+    ll = PGS2_GETARG_S2LATLNG_P(0);
+    cell = palloc0(sizeof(pgs2_S2Cell));
+    
+    s2c_latlng_to_cell(ll, cell, error_callback);
+    PGS2_RETURN_S2CELL_P(cell);
 }
 

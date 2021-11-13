@@ -1,10 +1,6 @@
 #ifndef PGS2LATLNG_H
 #define PGS2LATLNG_H
 
-typedef struct pgs2_S2LatLng {
-    double x, y;
-} pgs2_S2LatLng;
-
 #define DatumGetS2LatLngP(X)    ((pgs2_S2LatLng *) DatumGetPointer(X))
 #define S2LatLngPGetDatum(X)    PointerGetDatum(X)
 #define PGS2_GETARG_S2LATLNG_P(n) DatumGetS2LatLngP(PG_GETARG_DATUM(n))

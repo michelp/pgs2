@@ -1,10 +1,6 @@
 #ifndef PGS2CELL_H
 #define PGS2CELL_H
 
-typedef struct pgs2_S2Cell {
-    uint64_t id;
-} pgs2_S2Cell;
-
 #define DatumGetS2cellP(X)    ((pgs2_S2Cell *) DatumGetPointer(X))
 #define S2cellPGetDatum(X)    PointerGetDatum(X)
 #define PGS2_GETARG_S2CELL_P(n) DatumGetS2cellP(PG_GETARG_DATUM(n))
