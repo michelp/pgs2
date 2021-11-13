@@ -119,7 +119,7 @@ CREATE OPERATOR = (
 
 -- S2Cap
 
-CREATE FUNCTION S2Cap(x float8, y float8, z float8 = 0.0, r float8 = 0.0)
+CREATE FUNCTION S2Cap(center S2Point, radium float8 = 0.0)
 RETURNS S2Cap
 AS '$libdir/pgs2', 'S2Cap'
 LANGUAGE C STRICT;

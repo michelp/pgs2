@@ -10,7 +10,8 @@ typedef struct pgs2_S2Point {
 } pgs2_S2Point;
 
 typedef struct pgs2_S2Cap {
-    double x, y, z, r;
+    pgs2_S2Point center;
+    double radius;
 } pgs2_S2Cap;
 
 typedef struct pgs2_S2LatLng {

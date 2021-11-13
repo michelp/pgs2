@@ -8,18 +8,23 @@ These fixed length types are stored "flat" and only turned into S2
 instances at the point of use.  They are stored very efficiently by
 Postgres.
 
-### S2Cell: Stored as a 64-bit cell id.
+### S2Cell
 
-A cell is stored as an unsigned 64 id, but since Postgres doesn't have
-unsigned integer types, it's SQL representation is an S2 "token":
+A cell is stored as an unsigned 64bit int id, but since Postgres
+doesn't have unsigned integer types, it's SQL representation is an S2
+"token":
 
 ```
 
 ```
 
-### S2Point: Stored as 3 double precision floats.
+### S2Point
 
-### S2Cap: Point and radius stored as 4 doubles.
+Stored as 3 double precision floats.
+
+### S2Cap
+
+Point and radius stored as 4 doubles.
 
 ### S2LatLng: Stored as 2 doubles.
 

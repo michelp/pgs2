@@ -1,22 +1,20 @@
 Datum
 S2Cap(PG_FUNCTION_ARGS) {
-    pgs2_S2Cap *p;
-    p = palloc0(sizeof(pgs2_S2Cap));
-    p->x = PG_GETARG_FLOAT8(0);
-    p->y = PG_GETARG_FLOAT8(1);
-    p->z = PG_GETARG_FLOAT8(2);
-    p->r = PG_GETARG_FLOAT8(3);
-    PGS2_RETURN_S2CAP_P(p);
+    pgs2_S2Cap *cap = palloc0(sizeof(cap));
+
+    cap->center = *PGS2_GETARG_S2POINT_P(0);
+    cap->radius = PG_GETARG_FLOAT8(2);
+    PGS2_RETURN_S2CAP_P(cap);
 }
 
 Datum
 S2Cap_in(PG_FUNCTION_ARGS) {
   bool has_delim;
-  pgs2_S2Cap *p;
+  pgs2_S2Cap *cap;
   char *input, *orig_string;
 
   input = orig_string = PG_GETARG_CSTRING(0);
-  p = palloc0(sizeof(pgs2_S2Cap));
+  cap = palloc0(sizeof(cap));
 
   while (isspace((unsigned char) *input))
       input++;
@@ -24,7 +22,7 @@ S2Cap_in(PG_FUNCTION_ARGS) {
   if ((has_delim = (*input == LPAREN)))
       input++;
 
-  p->x = float8in_internal(input, &input, "S2Cap", orig_string);
+  cap->center.x = float8in_internal(input, &input, "S2Cap", orig_string);
 
   if (*input++ != DELIM)
       ereport(ERROR,
@@ -32,7 +30,7 @@ S2Cap_in(PG_FUNCTION_ARGS) {
                errmsg("invalid delimiter after x in %s: \"%s\"",
                       "S2Cap", orig_string)));
 
-  p->y = float8in_internal(input, &input, "S2Cap", orig_string);
+  cap->center.y = float8in_internal(input, &input, "S2Cap", orig_string);
 
   if (*input++ != DELIM)
       ereport(ERROR,
@@ -40,7 +38,7 @@ S2Cap_in(PG_FUNCTION_ARGS) {
                errmsg("invalid delimiter after y in %s: \"%s\"",
                       "S2Cap", orig_string)));
 
-  p->z = float8in_internal(input, &input, "S2Cap", orig_string);
+  cap->center.z = float8in_internal(input, &input, "S2Cap", orig_string);
 
   if (*input++ != COLON)
       ereport(ERROR,
@@ -48,8 +46,8 @@ S2Cap_in(PG_FUNCTION_ARGS) {
                errmsg("invalid delimiter after z in %s: \"%s\"",
                       "S2Cap", orig_string)));
 
-  p->r = float8in_internal(input, &input, "S2Cap", orig_string);
-  
+  cap->radius = float8in_internal(input, &input, "S2Cap", orig_string);
+
   if (has_delim)
       {
           if (*input++ != RPAREN)
@@ -67,7 +65,7 @@ S2Cap_in(PG_FUNCTION_ARGS) {
                errmsg("no null byte at end of %s: \"%s\"",
                       "S2Cap", orig_string)));
 
-  PGS2_RETURN_S2CAP_P(p);
+  PGS2_RETURN_S2CAP_P(cap);
 }
 
 Datum
@@ -75,14 +73,14 @@ S2Cap_out(PG_FUNCTION_ARGS)
 {
     char *xstr, *ystr, *zstr, *rstr;
     StringInfoData str;
-    pgs2_S2Cap *p = PGS2_GETARG_S2CAP_P(0);
+    pgs2_S2Cap *cap = PGS2_GETARG_S2CAP_P(0);
     initStringInfo(&str);
-    
-    xstr = float8out_internal(p->x);
-    ystr = float8out_internal(p->y);
-    zstr = float8out_internal(p->z);
-    rstr = float8out_internal(p->r);
-    
+
+    xstr = float8out_internal(cap->center.x);
+    ystr = float8out_internal(cap->center.y);
+    zstr = float8out_internal(cap->center.z);
+    rstr = float8out_internal(cap->radius);
+
     appendStringInfo(&str, "(%s,%s,%s:%s)", xstr, ystr, zstr, rstr);
     pfree(xstr);
     pfree(ystr);
@@ -96,6 +94,8 @@ S2Cap_eq(PG_FUNCTION_ARGS) {
     pgs2_S2Cap *A, *B;
     A = PGS2_GETARG_S2CAP_P(0);
     B = PGS2_GETARG_S2CAP_P(1);
-    PG_RETURN_BOOL(A->x == B->x && A->y == B->y &&
-                   A->z == B->z && A->r == B->r);
+    PG_RETURN_BOOL(A->center.x == B->center.x &&
+                   A->center.y == B->center.y &&
+                   A->center.z == B->center.z &&
+                   A->radius == B->radius);
 }
