@@ -183,8 +183,8 @@ CREATE TYPE S2LatLngRect (
     output = S2LatLngRect_out,
     alignment = double,
     storage = 'plain',
-    internallength = 16,
-    element = float8,
+    internallength = 32,
+    element = s2latlng,
     category = 'G'
 );
 

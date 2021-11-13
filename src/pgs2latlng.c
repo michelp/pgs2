@@ -14,6 +14,7 @@ S2LatLng_in(PG_FUNCTION_ARGS) {
   char *input, *orig_string;
 
   input = orig_string = PG_GETARG_CSTRING(0);
+
   l = palloc0(sizeof(pgs2_S2LatLng));
 
   while (isspace((unsigned char) *input))
