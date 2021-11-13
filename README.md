@@ -26,11 +26,15 @@ Stored as 3 double precision floats.
 
 Point and radius stored as 4 doubles.
 
-### S2LatLng: Stored as 2 doubles.
+### S2LatLng
 
-### S2LatLngRect: Stored as 4 doubles.
+Stored as 2 doubles.
 
-## Variable Length S2Region types TODO
+### S2LatLngRect
+
+Stored as 4 doubles.
+
+## TODO Variable Length S2Region Types
 
 These types are variable length "expanded" types, they are stored in a
 flattened representation using S2 Encoder/Decoder and automatically
@@ -44,7 +48,7 @@ expanded into live objects as needed when loaded into memory.
 
 ### S2Polygon
 
-## Aggregate S2Builder TODO
+## TODO Aggregate S2Builder
 
 S2Builder is wrapped by an aggregate, any region can be added to the
 builder.
@@ -53,7 +57,7 @@ builder.
 
 s2builder supports all current geometry types.
 
-## Indexing
+## TODO Indexing
 
 ### S2Cell Token btree with text_pattern_ops
 
