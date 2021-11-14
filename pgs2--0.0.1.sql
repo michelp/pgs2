@@ -6,6 +6,8 @@ CREATE TYPE S2Cell;
 CREATE TYPE S2LatLng;
 CREATE TYPE S2Cap;
 
+CREATE OPERATOR FAMILY S2_ops USING btree;
+
 -- S2Point
 
 CREATE FUNCTION S2Point(x float8, y float8, z float8 = 0.0)
@@ -57,11 +59,6 @@ RETURNS cstring
 AS '$libdir/pgs2', 'S2Cell_out'
 LANGUAGE C IMMUTABLE STRICT;
 
-CREATE FUNCTION S2Cell_eq(A S2Cell, B S2Cell)
-RETURNS bool
-AS '$libdir/pgs2', 'S2Cell_eq'
-LANGUAGE C STABLE;
-
 CREATE TYPE S2Cell (
     input = S2Cell_in,
     output = S2Cell_out,
@@ -71,6 +68,11 @@ CREATE TYPE S2Cell (
     category = 'G'
 );
 
+CREATE FUNCTION S2Cell_eq(A S2Cell, B S2Cell)
+RETURNS bool
+AS '$libdir/pgs2', 'S2Cell_eq'
+LANGUAGE C STABLE;
+
 CREATE OPERATOR = (
     leftarg = S2Cell,
     rightarg = S2Cell,
@@ -78,9 +80,84 @@ CREATE OPERATOR = (
     negator = <>
 );
 
+CREATE FUNCTION S2Cell_lt(A S2Cell, B S2Cell)
+RETURNS bool
+AS '$libdir/pgs2', 'S2Cell_lt'
+LANGUAGE C STABLE;
+
+CREATE OPERATOR < (
+    leftarg = S2Cell,
+    rightarg = S2Cell,
+    procedure = S2Cell_lt,
+    negator = >=
+);
+
+CREATE FUNCTION S2Cell_gt(A S2Cell, B S2Cell)
+RETURNS bool
+AS '$libdir/pgs2', 'S2Cell_gt'
+LANGUAGE C STABLE;
+
+CREATE OPERATOR > (
+    leftarg = S2Cell,
+    rightarg = S2Cell,
+    procedure = S2Cell_gt,
+    negator = <=
+);
+
+CREATE FUNCTION S2Cell_le(A S2Cell, B S2Cell)
+RETURNS bool
+AS '$libdir/pgs2', 'S2Cell_le'
+LANGUAGE C STABLE;
+
+CREATE OPERATOR <= (
+    leftarg = S2Cell,
+    rightarg = S2Cell,
+    procedure = S2Cell_le,
+    negator = >
+);
+
+CREATE FUNCTION S2Cell_ge(A S2Cell, B S2Cell)
+RETURNS bool
+AS '$libdir/pgs2', 'S2Cell_ge'
+LANGUAGE C STABLE;
+
+CREATE OPERATOR >= (
+    leftarg = S2Cell,
+    rightarg = S2Cell,
+    procedure = S2Cell_ge,
+    negator = <=
+);
+
+CREATE FUNCTION S2Cell_cmp(A S2Cell, B S2Cell)
+RETURNS int
+AS '$libdir/pgs2', 'S2Cell_cmp'
+LANGUAGE C STABLE;
+
+CREATE FUNCTION S2Cell_distance(A S2Cell, B S2Cell)
+RETURNS float8
+AS '$libdir/pgs2', 'S2Cell_distance'
+LANGUAGE C STABLE;
+
+CREATE OPERATOR <-> (
+    leftarg = S2Cell,
+    rightarg = S2Cell,
+    procedure = S2Cell_distance
+);
+
+CREATE OPERATOR CLASS S2Cell_ops
+    DEFAULT FOR TYPE S2Cell USING btree FAMILY S2_ops AS
+    OPERATOR 1 <  (S2Cell, S2Cell),
+    OPERATOR 2 <= (S2Cell, S2Cell),
+    OPERATOR 3 =  (S2Cell, S2Cell),
+    OPERATOR 4 >= (S2Cell, S2Cell),
+    OPERATOR 5 >  (S2Cell, S2Cell),
+
+    FUNCTION 1 S2Cell_cmp (S2Cell, S2Cell),
+    FUNCTION 4 btequalimage(oid);
+
 -- LatLng
 
-CREATE FUNCTION S2LatLng(x float8, y float8)
+CREATE FUNCTION S2LatLng(x float8, y float8, degrees bool = False)
 RETURNS S2LatLng
 AS '$libdir/pgs2', 'S2LatLng'
 LANGUAGE C STRICT;

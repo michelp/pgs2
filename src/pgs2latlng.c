@@ -1,9 +1,15 @@
 Datum
 S2LatLng(PG_FUNCTION_ARGS) {
     pgs2_S2LatLng *l;
+    bool degrees = false;
     l = palloc0(sizeof(pgs2_S2LatLng));
     l->lat = PG_GETARG_FLOAT8(0);
     l->lng = PG_GETARG_FLOAT8(1);
+    degrees = PG_GETARG_BOOL(2);
+    if (degrees) {
+        l->lat = degToRad(l->lat);
+        l->lng = degToRad(l->lng);
+    }
     PGS2_RETURN_S2LATLNG_P(l);
 }
 

@@ -20,3 +20,11 @@ void s2c_cell_to_point(pgs2_S2Cell *cell, pgs2_S2Point *point, error_cb cb) {
         point->z = P.z();
     } CATCH_ALL(cb)
 }
+
+void s2c_cell_to_cell_distance(pgs2_S2Cell *a, pgs2_S2Cell *b, double *distance, error_cb cb) {
+    try {
+        S2Cell A = S2Cell(S2CellId(a->id));
+        S2Cell B = S2Cell(S2CellId(b->id));
+        *distance = A.GetDistance(B).radians();
+    } CATCH_ALL(cb)
+}

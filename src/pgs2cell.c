@@ -10,8 +10,7 @@ S2Cell_in(PG_FUNCTION_ARGS) {
 }
 
 Datum
-S2Cell_out(PG_FUNCTION_ARGS)
-{
+S2Cell_out(PG_FUNCTION_ARGS) {
     char *token, *result;
     StringInfoData str;
 
@@ -23,10 +22,70 @@ S2Cell_out(PG_FUNCTION_ARGS)
     PG_RETURN_CSTRING(result);
 }
 
+int32
+S2Cell_cmp_internal(pgs2_S2Cell *A, pgs2_S2Cell *B) {
+    if (A->id < B->id)
+        return -1;
+    if (A->id > B->id)
+        return 1;
+    return 0;
+}
+
 Datum
 S2Cell_eq(PG_FUNCTION_ARGS) {
     pgs2_S2Cell *A, *B;
     A = PGS2_GETARG_S2CELL_P(0);
     B = PGS2_GETARG_S2CELL_P(1);
-    PG_RETURN_BOOL(A->id == B->id);
+    PG_RETURN_BOOL(S2Cell_cmp_internal(A, B) == 0);
 }
+
+Datum
+S2Cell_lt(PG_FUNCTION_ARGS) {
+    pgs2_S2Cell *A, *B;
+    A = PGS2_GETARG_S2CELL_P(0);
+    B = PGS2_GETARG_S2CELL_P(1);
+    PG_RETURN_BOOL(S2Cell_cmp_internal(A, B) < 0);
+}
+
+Datum
+S2Cell_gt(PG_FUNCTION_ARGS) {
+    pgs2_S2Cell *A, *B;
+    A = PGS2_GETARG_S2CELL_P(0);
+    B = PGS2_GETARG_S2CELL_P(1);
+    PG_RETURN_BOOL(S2Cell_cmp_internal(A, B) > 0);
+}
+
+Datum
+S2Cell_le(PG_FUNCTION_ARGS) {
+    pgs2_S2Cell *A, *B;
+    A = PGS2_GETARG_S2CELL_P(0);
+    B = PGS2_GETARG_S2CELL_P(1);
+    PG_RETURN_BOOL(S2Cell_cmp_internal(A, B) <= 0);
+}
+
+Datum
+S2Cell_ge(PG_FUNCTION_ARGS) {
+    pgs2_S2Cell *A, *B;
+    A = PGS2_GETARG_S2CELL_P(0);
+    B = PGS2_GETARG_S2CELL_P(1);
+    PG_RETURN_BOOL(S2Cell_cmp_internal(A, B) >= 0);
+}
+
+Datum
+S2Cell_cmp(PG_FUNCTION_ARGS) {
+    pgs2_S2Cell *A, *B;
+    A = PGS2_GETARG_S2CELL_P(0);
+    B = PGS2_GETARG_S2CELL_P(1);
+    PG_RETURN_INT32(S2Cell_cmp_internal(A, B));
+}
+
+Datum
+S2Cell_distance(PG_FUNCTION_ARGS) {
+    pgs2_S2Cell *A, *B;
+    double distance;
+    A = PGS2_GETARG_S2CELL_P(0);
+    B = PGS2_GETARG_S2CELL_P(1);
+    s2c_cell_to_cell_distance(A, B, &distance, error_callback);
+    PG_RETURN_FLOAT8(distance);
+}
+
