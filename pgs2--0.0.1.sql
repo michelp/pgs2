@@ -8,45 +8,6 @@ CREATE TYPE S2Cap;
 
 CREATE OPERATOR FAMILY S2_ops USING btree;
 
--- S2Point
-
-CREATE FUNCTION S2Point(x float8, y float8, z float8 = 0.0)
-RETURNS S2Point
-AS '$libdir/pgs2', 'S2Point'
-LANGUAGE C STRICT;
-
-CREATE FUNCTION S2Point_in(cstring)
-RETURNS S2Point
-AS '$libdir/pgs2', 'S2Point_in'
-LANGUAGE C IMMUTABLE STRICT;
-
-CREATE FUNCTION S2Point_out(S2Point)
-RETURNS cstring
-AS '$libdir/pgs2', 'S2Point_out'
-LANGUAGE C IMMUTABLE STRICT;
-
-CREATE FUNCTION S2Point_eq(A S2Point, B S2Point)
-RETURNS bool
-AS '$libdir/pgs2', 'S2Point_eq'
-LANGUAGE C STABLE;
-
-CREATE TYPE S2Point (
-    input = S2Point_in,
-    output = S2Point_out,
-    alignment = double,
-    storage = 'plain',
-    internallength = 24,
-    element = float8,
-    category = 'G'
-);
-
-CREATE OPERATOR = (
-    leftarg = S2Point,
-    rightarg = S2Point,
-    procedure = S2Point_eq,
-    negator = <>
-);
-
 -- S2Cell
 
 CREATE FUNCTION S2Cell_in(cstring)
@@ -89,7 +50,10 @@ CREATE OPERATOR < (
     leftarg = S2Cell,
     rightarg = S2Cell,
     procedure = S2Cell_lt,
-    negator = >=
+    negator = >=,
+    commutator = >,
+    restrict = scalarltsel,
+    join = scalarltjoinsel
 );
 
 CREATE FUNCTION S2Cell_gt(A S2Cell, B S2Cell)
@@ -101,7 +65,10 @@ CREATE OPERATOR > (
     leftarg = S2Cell,
     rightarg = S2Cell,
     procedure = S2Cell_gt,
-    negator = <=
+    negator = <=,
+    commutator = <,
+    restrict = scalargtsel,
+    join = scalargtjoinsel
 );
 
 CREATE FUNCTION S2Cell_le(A S2Cell, B S2Cell)
@@ -113,7 +80,10 @@ CREATE OPERATOR <= (
     leftarg = S2Cell,
     rightarg = S2Cell,
     procedure = S2Cell_le,
-    negator = >
+    negator = >,
+    commutator = >=,
+    restrict = scalarltsel,
+    join = scalarltjoinsel
 );
 
 CREATE FUNCTION S2Cell_ge(A S2Cell, B S2Cell)
@@ -125,7 +95,10 @@ CREATE OPERATOR >= (
     leftarg = S2Cell,
     rightarg = S2Cell,
     procedure = S2Cell_ge,
-    negator = <=
+    negator = <,
+    commutator = <=,
+    restrict = scalargtsel,
+    join = scalargtjoinsel
 );
 
 CREATE FUNCTION S2Cell_cmp(A S2Cell, B S2Cell)
@@ -144,6 +117,11 @@ CREATE OPERATOR <-> (
     procedure = S2Cell_distance
 );
 
+CREATE FUNCTION btS2Cellsortsupport(internal)
+RETURNS void
+AS '$libdir/pgs2', 'btS2Cellsortsupport'
+LANGUAGE C STABLE;
+
 CREATE OPERATOR CLASS S2Cell_ops
     DEFAULT FOR TYPE S2Cell USING btree FAMILY S2_ops AS
     OPERATOR 1 <  (S2Cell, S2Cell),
@@ -151,9 +129,48 @@ CREATE OPERATOR CLASS S2Cell_ops
     OPERATOR 3 =  (S2Cell, S2Cell),
     OPERATOR 4 >= (S2Cell, S2Cell),
     OPERATOR 5 >  (S2Cell, S2Cell),
-
     FUNCTION 1 S2Cell_cmp (S2Cell, S2Cell),
+    FUNCTION 2 btS2Cellsortsupport(internal),
     FUNCTION 4 btequalimage(oid);
+
+-- S2Point
+
+CREATE FUNCTION S2Point(x float8, y float8, z float8 = 0.0)
+RETURNS S2Point
+AS '$libdir/pgs2', 'S2Point'
+LANGUAGE C STRICT;
+
+CREATE FUNCTION S2Point_in(cstring)
+RETURNS S2Point
+AS '$libdir/pgs2', 'S2Point_in'
+LANGUAGE C IMMUTABLE STRICT;
+
+CREATE FUNCTION S2Point_out(S2Point)
+RETURNS cstring
+AS '$libdir/pgs2', 'S2Point_out'
+LANGUAGE C IMMUTABLE STRICT;
+
+CREATE FUNCTION S2Point_eq(A S2Point, B S2Point)
+RETURNS bool
+AS '$libdir/pgs2', 'S2Point_eq'
+LANGUAGE C STABLE;
+
+CREATE TYPE S2Point (
+    input = S2Point_in,
+    output = S2Point_out,
+    alignment = double,
+    storage = 'plain',
+    internallength = 24,
+    element = float8,
+    category = 'G'
+);
+
+CREATE OPERATOR = (
+    leftarg = S2Point,
+    rightarg = S2Point,
+    procedure = S2Point_eq,
+    negator = <>
+);
 
 -- LatLng
 
