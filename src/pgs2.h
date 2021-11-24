@@ -18,15 +18,15 @@
 #include "lib/stringinfo.h"
 #include "s2c/s2c.h"
 
-#define DELIM  ','
+#define DELIM ','
 #define LPAREN '('
 #define RPAREN ')'
 #define LCURLY '{'
 #define RCURLY '}'
-#define COLON  ':'
+#define COLON ':'
 
-#define degToRad(angleInDegrees) ((angleInDegrees) * M_PI / 180.0)
-#define radToDeg(angleInRadians) ((angleInRadians) * 180.0 / M_PI)
+#define degToRad(angleInDegrees) ((angleInDegrees)*M_PI / 180.0)
+#define radToDeg(angleInRadians) ((angleInRadians)*180.0 / M_PI)
 
 void error_callback(const char *msg);
 
@@ -39,7 +39,6 @@ void error_callback(const char *msg);
 #include "pgs2cellunion.h"
 #include "casts.h"
 
-void
-_PG_init(void);
+void _PG_init(void);
 
 #endif /* PGS2_H */

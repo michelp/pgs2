@@ -1,8 +1,8 @@
 #ifndef PGS2LATLNG_H
 #define PGS2LATLNG_H
 
-#define DatumGetS2LatLngP(X)    ((pgs2_S2LatLng *) DatumGetPointer(X))
-#define S2LatLngPGetDatum(X)    PointerGetDatum(X)
+#define DatumGetS2LatLngP(X) ((pgs2_S2LatLng *)DatumGetPointer(X))
+#define S2LatLngPGetDatum(X) PointerGetDatum(X)
 #define PGS2_GETARG_S2LATLNG_P(n) DatumGetS2LatLngP(PG_GETARG_DATUM(n))
 #define PGS2_RETURN_S2LATLNG_P(x) return S2LatLngPGetDatum(x)
 

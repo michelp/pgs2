@@ -1,8 +1,8 @@
 #ifndef PGS2CELL_H
 #define PGS2CELL_H
 
-#define DatumGetS2CellP(X)    ((pgs2_S2Cell *) DatumGetPointer(X))
-#define S2CellPGetDatum(X)    PointerGetDatum(X)
+#define DatumGetS2CellP(X) ((pgs2_S2Cell *)DatumGetPointer(X))
+#define S2CellPGetDatum(X) PointerGetDatum(X)
 #define PGS2_GETARG_S2CELL_P(n) DatumGetS2CellP(PG_GETARG_DATUM(n))
 #define PGS2_RETURN_S2CELL_P(x) return S2CellPGetDatum(x)
 

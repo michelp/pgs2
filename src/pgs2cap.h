@@ -1,8 +1,8 @@
 #ifndef PGS2CAP_H
 #define PGS2CAP_H
 
-#define DatumGetS2CapP(X)    ((pgs2_S2Cap *) DatumGetPointer(X))
-#define S2CapPGetDatum(X)    PointerGetDatum(X)
+#define DatumGetS2CapP(X) ((pgs2_S2Cap *)DatumGetPointer(X))
+#define S2CapPGetDatum(X) PointerGetDatum(X)
 #define PGS2_GETARG_S2CAP_P(n) DatumGetS2CapP(PG_GETARG_DATUM(n))
 #define PGS2_RETURN_S2CAP_P(x) return S2CapPGetDatum(x)
 

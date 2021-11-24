@@ -2,9 +2,8 @@
 PG_MODULE_MAGIC;
 
 void error_callback(const char *msg) {
-	ereport(ERROR,
-			(errcode(ERRCODE_DATA_EXCEPTION),
-             errmsg("S2 library exception: \"%s\"", msg)));
+  ereport(ERROR, (errcode(ERRCODE_DATA_EXCEPTION),
+                  errmsg("S2 library exception: \"%s\"", msg)));
 }
 
 #include "pgs2cell.c"
@@ -15,7 +14,4 @@ void error_callback(const char *msg) {
 #include "pgs2cellunion.c"
 #include "casts.c"
 
-void
-_PG_init(void)
-{
-}
+void _PG_init(void) {}

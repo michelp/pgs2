@@ -1,20 +1,18 @@
-Datum
-S2LatLng(PG_FUNCTION_ARGS) {
-    pgs2_S2LatLng *l;
-    bool degrees = false;
-    l = palloc0(sizeof(pgs2_S2LatLng));
-    l->lat = PG_GETARG_FLOAT8(0);
-    l->lng = PG_GETARG_FLOAT8(1);
-    degrees = PG_GETARG_BOOL(2);
-    if (degrees) {
-        l->lat = degToRad(l->lat);
-        l->lng = degToRad(l->lng);
-    }
-    PGS2_RETURN_S2LATLNG_P(l);
+Datum S2LatLng(PG_FUNCTION_ARGS) {
+  pgs2_S2LatLng *l;
+  bool degrees = false;
+  l = palloc0(sizeof(pgs2_S2LatLng));
+  l->lat = PG_GETARG_FLOAT8(0);
+  l->lng = PG_GETARG_FLOAT8(1);
+  degrees = PG_GETARG_BOOL(2);
+  if (degrees) {
+    l->lat = degToRad(l->lat);
+    l->lng = degToRad(l->lng);
+  }
+  PGS2_RETURN_S2LATLNG_P(l);
 }
 
-Datum
-S2LatLng_in(PG_FUNCTION_ARGS) {
+Datum S2LatLng_in(PG_FUNCTION_ARGS) {
   bool has_delim;
   pgs2_S2LatLng *l;
   char *input, *orig_string;
@@ -24,54 +22,47 @@ S2LatLng_in(PG_FUNCTION_ARGS) {
 
   l = palloc0(sizeof(pgs2_S2LatLng));
 
-  while (isspace((unsigned char) *input))
-      input++;
+  while (isspace((unsigned char)*input))
+    input++;
 
   if ((has_delim = (*input == LPAREN))) {
-      input++;
-  }
-  else if ((has_delim = (*input == LCURLY))) {
-      radians = false;
-      input++;
+    input++;
+  } else if ((has_delim = (*input == LCURLY))) {
+    radians = false;
+    input++;
   }
 
   l->lat = float8in_internal(input, &input, "S2LatLng", orig_string);
   if (!radians)
-      l->lat = degToRad(l->lat);
+    l->lat = degToRad(l->lat);
 
   if (*input++ != DELIM)
-      ereport(ERROR,
-              (errcode(ERRCODE_INVALID_TEXT_REPRESENTATION),
-               errmsg("invalid delimiter after x in %s: \"%s\"",
-                      "S2LatLng", orig_string)));
+    ereport(ERROR, (errcode(ERRCODE_INVALID_TEXT_REPRESENTATION),
+                    errmsg("invalid delimiter after x in %s: \"%s\"",
+                           "S2LatLng", orig_string)));
 
   l->lng = float8in_internal(input, &input, "S2LatLng", orig_string);
   if (!radians)
-      l->lng = degToRad(l->lng);
+    l->lng = degToRad(l->lng);
 
-  if (has_delim)
-      {
-          if ((radians && *input != RPAREN) || (!radians && *input != RCURLY))
-              ereport(ERROR,
-                      (errcode(ERRCODE_INVALID_TEXT_REPRESENTATION),
-                       errmsg("invalid ending delimter for %s: \"%s\"",
-                              "S2LatLng", orig_string)));
-          while (isspace((unsigned char) *input))
-              input++;
-      }
+  if (has_delim) {
+    if ((radians && *input != RPAREN) || (!radians && *input != RCURLY))
+      ereport(ERROR, (errcode(ERRCODE_INVALID_TEXT_REPRESENTATION),
+                      errmsg("invalid ending delimter for %s: \"%s\"",
+                             "S2LatLng", orig_string)));
+    while (isspace((unsigned char)*input))
+      input++;
+  }
 
   if (*++input != '\0')
-      ereport(ERROR,
-              (errcode(ERRCODE_INVALID_TEXT_REPRESENTATION),
-               errmsg("no null byte at end of %s: \"%s\"",
-                      "S2LatLng", orig_string)));
+    ereport(ERROR, (errcode(ERRCODE_INVALID_TEXT_REPRESENTATION),
+                    errmsg("no null byte at end of %s: \"%s\"", "S2LatLng",
+                           orig_string)));
 
   PGS2_RETURN_S2LATLNG_P(l);
 }
 
-Datum
-S2LatLng_out(PG_FUNCTION_ARGS)
-{
+Datum S2LatLng_out(PG_FUNCTION_ARGS) {
   char *xstr, *ystr;
   StringInfoData str;
 
@@ -87,8 +78,7 @@ S2LatLng_out(PG_FUNCTION_ARGS)
   PG_RETURN_CSTRING(str.data);
 }
 
-Datum
-S2LatLng_eq(PG_FUNCTION_ARGS) {
+Datum S2LatLng_eq(PG_FUNCTION_ARGS) {
   pgs2_S2LatLng *A, *B;
 
   A = PGS2_GETARG_S2LATLNG_P(0);
