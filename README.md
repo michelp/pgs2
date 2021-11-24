@@ -47,8 +47,6 @@ These types are variable length "expanded" types, they are stored in a
 flattened representation using S2 Encoder/Decoder and automatically
 expanded into live objects as needed when loaded into memory.
 
-### S2CellUnion
-
 ### S2Polyline
 
 ### S2Loop

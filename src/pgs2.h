@@ -36,6 +36,7 @@ void error_callback(const char *msg);
 #include "pgs2latlng.h"
 #include "pgs2latlngrect.h"
 #include "pgs2cap.h"
+#include "pgs2cellunion.h"
 #include "casts.h"
 
 void

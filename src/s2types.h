@@ -22,4 +22,8 @@ typedef struct pgs2_S2LatLngRect {
     pgs2_S2LatLng lo, hi;
 } pgs2_S2LatLngRect;
 
+// cell union varlena types
+
+STRUCTS(s2c_S2CellUnion);
+
 #endif

@@ -12,6 +12,7 @@ void error_callback(const char *msg) {
 #include "pgs2latlng.c"
 #include "pgs2latlngrect.c"
 #include "pgs2cap.c"
+#include "pgs2cellunion.c"
 #include "casts.c"
 
 void
